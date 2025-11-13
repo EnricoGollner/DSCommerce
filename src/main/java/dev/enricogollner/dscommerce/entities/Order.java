@@ -81,6 +81,8 @@ public class Order {
         this.payment = payment;
     }
 
+    public Set<OrderItem> getItems() { return items; }
+
     public List<Product> getProducts() {
         return items.stream().map(OrderItem::getProduct).toList();
     }
@@ -95,6 +97,6 @@ public class Order {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return id != null ? id.hashCode() : 0;
     }
 }

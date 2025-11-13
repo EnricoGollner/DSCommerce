@@ -50,8 +50,8 @@ public class OrderItemPK {
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(order);
-        result = 31 * result + Objects.hashCode(product);
+        int result = order != null ? order.hashCode() : 0;
+        result = 31 * result + (product != null ? product.hashCode() : 0);
         return result;
     }
 }
