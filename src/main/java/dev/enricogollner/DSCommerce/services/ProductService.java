@@ -6,6 +6,8 @@ import dev.enricogollner.DSCommerce.dto.ProductMinDTO;
 import dev.enricogollner.DSCommerce.entities.Category;
 import dev.enricogollner.DSCommerce.entities.Product;
 import dev.enricogollner.DSCommerce.repositories.ProductRepository;
+import dev.enricogollner.DSCommerce.services.exceptions.DatabaseException;
+import dev.enricogollner.DSCommerce.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,8 +26,9 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductDTO findById(Long id) {
-        Optional<Product> product = repository.findById(id);
-        return new ProductDTO(product.get());
+        Product product = repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Recurso não encontrado"));
+        return new ProductDTO(product);
     }
 
     @Transactional(readOnly = true)
@@ -43,7 +46,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO update(Long id, ProductDTO dto) throws Exception {
+    public ProductDTO update(Long id, ProductDTO dto) {
         try {
             Product entity = repository.getReferenceById(id);
             copyDtoToEntity(dto, entity);
@@ -51,20 +54,20 @@ public class ProductService {
             return new ProductDTO(entity);
         }
         catch (EntityNotFoundException e) {
-            throw new Exception("Recurso não encontrado");
+            throw new ResourceNotFoundException("Recurso não encontrado");
         }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
-    public void delete(Long id) throws Exception {
+    public void delete(Long id) {
     	if (!repository.existsById(id)) {
-    		throw new Exception("Recurso não encontrado");
+    		throw new ResourceNotFoundException("Recurso não encontrado");
     	}
     	try {
             repository.deleteById(id);    		
     	}
         catch (DataIntegrityViolationException e) {
-            throw new Exception("Falha de integridade referencial");
+            throw new DatabaseException("Falha de integridade referencial");
         }
     }
 
