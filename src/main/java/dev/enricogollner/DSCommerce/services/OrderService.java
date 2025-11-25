@@ -2,10 +2,7 @@ package dev.enricogollner.DSCommerce.services;
 
 import dev.enricogollner.DSCommerce.dto.OrderDTO;
 import dev.enricogollner.DSCommerce.dto.OrderItemDTO;
-import dev.enricogollner.DSCommerce.entities.Order;
-import dev.enricogollner.DSCommerce.entities.OrderItem;
-import dev.enricogollner.DSCommerce.entities.OrderStatus;
-import dev.enricogollner.DSCommerce.entities.Product;
+import dev.enricogollner.DSCommerce.entities.*;
 import dev.enricogollner.DSCommerce.repositories.OrderItemRepository;
 import dev.enricogollner.DSCommerce.repositories.OrderRepository;
 import dev.enricogollner.DSCommerce.repositories.ProductRepository;
@@ -27,6 +24,9 @@ public class OrderService {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
+    @Autowired
+    private UserService userService;
+
     @Transactional(readOnly = true)
     public OrderDTO findById(Long id) {
         Order order = repository.findById(id).orElseThrow(
@@ -39,6 +39,9 @@ public class OrderService {
         Order order = new Order();
         order.setMoment(Instant.now());
         order.setStatus(OrderStatus.WAITING_PAYMENT);
+
+        User user = userService.authenticated();
+        order.setClient(user);
 
         for (OrderItemDTO itemDTO : dto.getItems()) {
             Product product = productRepository.getReferenceById(itemDTO.getProductId());
