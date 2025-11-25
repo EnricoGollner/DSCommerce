@@ -3,7 +3,6 @@ package dev.enricogollner.DSCommerce.dto;
 import dev.enricogollner.DSCommerce.entities.OrderItem;
 
 public class OrderItemDTO {
-
 	private Long productId;
 	private String name;
 	private Double price;

@@ -13,9 +13,8 @@ public class OrderDTO {
 	private Long id;
 	private Instant moment;
 	private OrderStatus status;
-	
+
 	private ClientDTO client;
-	
 	private PaymentDTO payment;
 	
 	@NotEmpty(message = "Deve ter pelo menos um item")
