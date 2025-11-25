@@ -12,8 +12,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(nativeQuery = true, value = """
             SELECT tu.email AS username, tu.password, tr.id AS roleId, tr.authority
             FROM tb_user tu
-            INNER JOIN tb_user_role tur ON tu.id = tur.role_id
-            INNER JOIN tr ON tr.id = tur.role.id
+            INNER JOIN tb_user_role tur ON tu.id = tur.user_id
+            INNER JOIN tb_role tr ON tr.id = tur.role_id
             WHERE tu.email = :email
             """)
     List<UserDetailsProjection> searchUserAndRolesByEmail(String email);
